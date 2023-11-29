@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+      - hw-1
+      - hw-2
   pull_request:
     types: [opened, synchronize]
 
