@@ -1,4 +1,5 @@
 from typing import List
+import json
 
 from fastapi import APIRouter, Depends, FastAPI, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -17,6 +18,11 @@ class RecoResponse(BaseModel):
 router = APIRouter()
 security = HTTPBearer()
 
+with open('service/data/tfidf_userknn_popular_model_1.json', "r", encoding="utf8") as file:
+    TFIDF_USERKNN_POPULAR_RECOS = json.loads(file.read())
+with open('service/data/lightfm_recos_final_2.json', "r", encoding="utf8") as file:
+    LIGHTFM_RECOS = json.loads(file.read())
+POPULAR_RECOS = [202457, 193123, 132865, 122119, 91167, 74803, 68581, 55043, 45367, 40372]
 
 @router.get(
     path="/health",
@@ -52,7 +58,12 @@ async def get_reco(
         raise AuthorizationError(error_message="Invalid token")
 
     k_recs = request.app.state.k_recs
-    reco = list(range(k_recs))
+    if model_name == 'dummy_model':
+        reco = list(range(k_recs))
+    elif model_name == 'tfidf_userknn_popular_model':
+        reco = TFIDF_USERKNN_POPULAR_RECOS.get(str(user_id), POPULAR_RECOS)
+    elif model_name == 'lightfm_model':
+        reco = LIGHTFM_RECOS.get(str(user_id), POPULAR_RECOS)
     return RecoResponse(user_id=user_id, items=reco)
 
 
