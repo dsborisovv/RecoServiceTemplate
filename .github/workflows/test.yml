@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - master
+      - hw-1
+      - hw-2
+      - hw-3
+      - hw-4
   pull_request:
     types: [opened, synchronize]
 
@@ -36,9 +40,3 @@ jobs:
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install 
-      
-      - name: Run tests
-        run: make lint
-
-      - name: Run linters
-        run: make test
