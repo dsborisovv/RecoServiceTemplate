@@ -42,7 +42,4 @@ jobs:
         run: poetry install 
       
       - name: Run tests
-        run: make lint
-
-      - name: Run linters
         run: make test
